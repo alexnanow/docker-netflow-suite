@@ -5,6 +5,8 @@ Utiliza o Docker, Docker-compose, Grafana, Elastiflow e Elasticsearch.
 
 Para instalar:
 ```
+git clone github.com/alexnanow/docker-netflow-suite
+cd docker-netflow-suite
 docker-compose up -d
 ```
 Para entrar no grafana:
