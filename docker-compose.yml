@@ -1,0 +1,49 @@
+version: "3.8"
+networks:
+    elk:
+        driver: bridge
+    flowcoll:
+        driver: host
+services:
+    elasticsearch:
+        build:
+            context: elasticsearch/
+            args:
+                VERSAO_ELK: $VERSAO_ELK
+        #image: docker.elastic.co/elasticsearch/elasticsearch:7.15.1
+        restart: unless-stopped
+        hostname: elasticsearch01
+        ulimits:
+            memlock:
+                soft: -1
+                hard: -1
+                nofile:
+                soft: 131072
+                hard: 131072
+                nproc: 8192
+                fsize: -1
+        networks:
+            - elk
+        ports:
+        # HTTP/REST
+            - "127.0.0.1:9200:9200/tcp"
+        volumes:
+        # mkdir /var/lib/elasticsearch && chown -R 1000:1000 /var/lib/elasticsearch
+            - /var/lib/elasticsearch:/usr/share/elasticsearch/data
+            - /etc/certs:/usr/share/elasticsearch/config/certificates
+        environment:
+            ES_JAVA_OPTS: '-Xms8g -Xmx8g'
+            cluster.name: elastiflow
+            node.name: NODE_NAME
+            bootstrap.memory_lock: 'true'
+            network.bind_host: 0.0.0.0
+            #transport.host: 127.0.0.1
+            #network.publish_host: 192.0.2.11
+            http.port: 9200
+            http.publish_port: 9200
+            discovery.type: 'single-node'
+            indices.query.bool.max_clause_count: 8192
+            search.max_buckets: 250000
+            action.destructive_requires_name: 'true'
+            reindex.remote.whitelist: '*:*'
+     
