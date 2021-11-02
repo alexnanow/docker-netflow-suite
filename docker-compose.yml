@@ -12,6 +12,7 @@ services:
                 VERSAO_ELK: $VERSAO_ELK
         #image: docker.elastic.co/elasticsearch/elasticsearch:7.15.1
         restart: unless-stopped
+        container_name: elasticsearch01
         hostname: elasticsearch01
         ulimits:
             memlock:
