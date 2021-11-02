@@ -3,8 +3,6 @@ version: "3.8"
 networks:
     elk:
         driver: bridge
-    flowcoll:
-        driver: host
         
 services:
     
@@ -61,8 +59,7 @@ services:
         container_name: flow-collector
         hostname: flowcoll
         restart: 'unless-stopped'
-        networks:
-            - flowcoll
+        network_mode: host
         volumes:
             - /etc/elastiflow:/etc/elastiflow
         environment:
@@ -270,3 +267,6 @@ services:
           EF_FLOW_OUTPUT_RISKIQ_PORT:
           EF_FLOW_OUTPUT_RISKIQ_CUSTOMER_UUID: ''
           EF_FLOW_OUTPUT_RISKIQ_CUSTOMER_ENCRYPTION_KEY: ''
+        depends_on:
+            - elasticsearch
+    
