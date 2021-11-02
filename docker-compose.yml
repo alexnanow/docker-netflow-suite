@@ -17,11 +17,11 @@ services:
             memlock:
                 soft: -1
                 hard: -1
-                nofile:
+            nofile:
                 soft: 131072
                 hard: 131072
-                nproc: 8192
-                fsize: -1
+            nproc: 8192
+            fsize: -1
         networks:
             - elk
         ports:
