@@ -50,7 +50,7 @@ services:
             reindex.remote.whitelist: '*:*'
 
     # ElastiFlow Unified Flow Collector
-    flow-collector:
+    flowcoll:
         build:
             context: elastiflow/
             args:
@@ -270,4 +270,25 @@ services:
           EF_FLOW_OUTPUT_RISKIQ_CUSTOMER_ENCRYPTION_KEY: ''
         depends_on:
             - elasticsearch
+    
+    grafana:
+        build:
+            context: grafana/
+            args:
+                VERSAO_GRAFANA: $VERSAO_GRAFANA
+        container_name: grafana01
+        hostname: grafana01
+        volumes:
+            - /var/lib/grafana:/var/lib/grafana
+            - ./grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards
+            - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+        environment:
+            - GF_SECURITY_ADMIN_USER=${ADMIN_USER:-admin}
+            - GF_SECURITY_ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin}
+            - GF_USERS_ALLOW_SIGN_UP=false
+        restart: unless-stopped
+        expose:
+            - 3000
+        networks:
+            - elk
     
