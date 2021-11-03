@@ -34,7 +34,7 @@ services:
             - /var/lib/elasticsearch:/usr/share/elasticsearch/data
             - /etc/certs:/usr/share/elasticsearch/config/certificates
         environment:
-            ES_JAVA_OPTS: '-Xms128m -Xmx128m'
+            ES_JAVA_OPTS: '-Xms3g -Xmx3g'
             cluster.name: elastiflow
             node.name: elk01
             bootstrap.memory_lock: 'true'
@@ -63,6 +63,7 @@ services:
         volumes:
             - /etc/elastiflow:/etc/elastiflow
         environment:
+            ELK_URL: "127.0.0.1:9200"
           #EF_FLOW_ACCOUNT_ID: ''
           #EF_FLOW_LICENSE_KEY: ''
           #EF_FLOW_LICENSED_CORES:
