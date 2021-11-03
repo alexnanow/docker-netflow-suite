@@ -6,7 +6,7 @@ COPY wait-for-elk.sh /usr/local/bin/wait-for-elk.sh
 
 RUN apt install -y curl
 
-ENTRYPOINT ["sh", "/usr/local/bin/wait-for-elk.sh"]
+ENTRYPOINT ["bash", "/usr/local/bin/wait-for-elk.sh"]
 
 
 
