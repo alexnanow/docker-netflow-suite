@@ -280,8 +280,8 @@ services:
         hostname: grafana01
         volumes:
             - /var/lib/grafana:/var/lib/grafana
-            - ./grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards
-            - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+            #- ./grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards
+            #- ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
         environment:
             - GF_SECURITY_ADMIN_USER=${ADMIN_USER:-admin}
             - GF_SECURITY_ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin}
