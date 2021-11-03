@@ -6,4 +6,4 @@ until curl --output /dev/null --silent --head --fail "$ELK_URL"; do
   sleep 5
 done
 >&2 echo "ELK is up"
-source /usr/local/bin/flowcoll
+/usr/local/bin/flowcoll
