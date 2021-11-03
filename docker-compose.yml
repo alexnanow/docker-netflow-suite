@@ -288,7 +288,7 @@ services:
             - GF_USERS_ALLOW_SIGN_UP=false
         restart: unless-stopped
         expose:
-            - 3000
+            - 3000:3000
         networks:
             - elk
     
