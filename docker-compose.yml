@@ -287,8 +287,8 @@ services:
             - GF_SECURITY_ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin}
             - GF_USERS_ALLOW_SIGN_UP=false
         restart: unless-stopped
-        expose:
-            - 3000:3000
+        ports:
+            - "3000:3000"
         networks:
             - elk
     
