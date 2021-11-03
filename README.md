@@ -12,10 +12,16 @@ git clone github.com/alexnanow/docker-netflow-suite
 
 2. Criar as pastas de armazenamento das bases de dados do Elasticsearch e Grafana
 ```
-mkdir /var/lib/elasticsearch /var/lib/grafana && chown -R 1000:1000 /var/lib/elasticsearch && chown -R 1000:1000 /var/lib/grafana
+mkdir /var/lib/elasticsearch /var/lib/grafana
 ```
 
-3. Entrar e executar o docker-compose para baixar e rodar os containers das aplicações
+3. Aplicar permissão nas pastas do banco de dados
+
+```
+chown -R 1000:1000 `cat pastas`
+```
+
+4. Entrar e executar o docker-compose para baixar e rodar os containers das aplicações
 ```
 cd docker-netflow-suite
 docker-compose up -d
