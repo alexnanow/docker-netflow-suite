@@ -291,4 +291,6 @@ services:
             - "3000:3000"
         networks:
             - elk
+        depends_on:
+            - flowcoll
     
