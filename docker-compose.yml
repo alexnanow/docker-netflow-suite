@@ -63,7 +63,7 @@ services:
         volumes:
             - /etc/elastiflow:/etc/elastiflow
         environment:
-            ELK_URL: "127.0.0.1:9200"
+          ELK_URL: "127.0.0.1:9200"
           #EF_FLOW_ACCOUNT_ID: ''
           #EF_FLOW_LICENSE_KEY: ''
           #EF_FLOW_LICENSED_CORES:
