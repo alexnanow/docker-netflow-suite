@@ -32,3 +32,5 @@ Para entrar no grafana:
 ```
 http://<ipdoservidor>:3000
 ```
+
+Somente o Elastiflow precisa de modificação nas configurações para refletir o cenário atual. Basta editar o arquivo docker-compose.yml para modificar os parâmetros. Os parâmetros estão descritos no site do desenvolvedor: https://docs.elastiflow.com/docs/config_ref

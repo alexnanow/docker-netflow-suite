@@ -6,6 +6,7 @@ networks:
         
 services:
     
+    # Elasticsearch
     elasticsearch:
         build:
             context: elasticsearch/
@@ -270,7 +271,7 @@ services:
           EF_FLOW_OUTPUT_RISKIQ_CUSTOMER_ENCRYPTION_KEY: ''
         depends_on:
             - elasticsearch
-    
+    # Grafana
     grafana:
         build:
             context: grafana/
