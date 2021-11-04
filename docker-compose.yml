@@ -35,7 +35,7 @@ services:
             - /var/lib/elasticsearch:/usr/share/elasticsearch/data
             - /etc/certs:/usr/share/elasticsearch/config/certificates
         environment:
-            ES_JAVA_OPTS: '-Xms3g -Xmx3g'
+            ES_JAVA_OPTS: $ELK_MEMORY
             cluster.name: elastiflow
             node.name: elk01
             bootstrap.memory_lock: 'true'
