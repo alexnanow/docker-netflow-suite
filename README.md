@@ -14,8 +14,10 @@ git clone https://github.com/alexnanow/docker-netflow-suite
 2. Criar as pastas de armazenamento das bases de dados do Elasticsearch e Grafana
 
 ```
-mkdir /var/lib/elasticsearch /var/lib/grafana
+mkdir /var/lib/elasticsearch /var/lib/grafana 
+mkdir -r /etc/elastiflow/settings /etc/elastiflow/maxmind
 ```
+Obs: Necessário copiar os arquivos das bases de GeoIP da Maxmind dentro da pasta /etc/elastiflow/maxmind. A base é a GeoIP Lite. Necessário verificar o [site do desenvolvedor.](https://docs.elastiflow.com)
 
 3. Aplicar permissão nas pastas dos bancos de dados
 
