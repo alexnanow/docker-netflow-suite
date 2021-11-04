@@ -17,16 +17,25 @@ git clone https://github.com/alexnanow/docker-netflow-suite
 mkdir /var/lib/elasticsearch /var/lib/grafana 
 mkdir -r /etc/elastiflow/settings /etc/elastiflow/maxmind
 ```
-Obs: Necessário copiar os arquivos das bases de GeoIP da Maxmind dentro da pasta /etc/elastiflow/maxmind. A base é a GeoIP Lite. Necessário verificar o [site do desenvolvedor.](https://docs.elastiflow.com)
 
-3. Aplicar permissão nas pastas dos bancos de dados
+3. Extrair os arquivos de GeoIP
+
+Obs: Necessário copiar os arquivos das bases de GeoIP da Maxmind dentro da pasta /etc/elastiflow/maxmind. A base é a GeoIP Lite, que pode ser copiada da pasta elastiflow/maxmind. Necessário extrair os arquivos.Para mais instruções, verifique o [site do desenvolvedor.](https://docs.elastiflow.com)
+
+```
+cd docker-netflow-suite/elastiflow/maxmind
+cp * /etc/elastiflow/maxmind
+tar xvzf GeoLite2* --strip-components 1
+```
+
+4. Aplicar permissão nas pastas dos bancos de dados
 
 ```
 chown -R 1000:1000 /var/lib/elasticsearch
 chown -R 472:472 /var/lib/grafana 
 ```
 
-4. Entrar e executar o docker-compose para baixar e rodar os containers das aplicações
+5. Entrar e executar o docker-compose para baixar e rodar os containers das aplicações
 
 ```
 cd docker-netflow-suite
