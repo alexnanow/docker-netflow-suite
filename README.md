@@ -32,4 +32,3 @@ Para entrar no grafana:
 ```
 http://<ipdoservidor>:3000
 ```
-O grafana já virá com algumas dashboards configuradas. Outras irei adicionar aos poucos no repositório
