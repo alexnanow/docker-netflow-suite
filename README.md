@@ -7,7 +7,7 @@ Para instalar:
 
 1. Clonar o repositório via GIT. Necessário o git instalado
 ```
-git clone github.com/alexnanow/docker-netflow-suite
+git clone https://github.com/alexnanow/docker-netflow-suite
 ```
 
 2. Criar as pastas de armazenamento das bases de dados do Elasticsearch e Grafana
