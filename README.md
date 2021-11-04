@@ -46,7 +46,7 @@ mkdir -p /etc/elastiflow/settings /etc/elastiflow/maxmind
 
 3. Extrair os arquivos de GeoIP
 
-Obs: Necessário copiar os arquivos das bases de GeoIP da Maxmind dentro da pasta /etc/elastiflow/maxmind. A base é a GeoIP Lite, que pode ser copiada da pasta elastiflow/maxmind. Necessário extrair os arquivos.Para mais instruções, verifique o [site do desenvolvedor.](https://docs.elastiflow.com)
+Obs: Necessário copiar os arquivos das bases de GeoIP da Maxmind dentro da pasta /etc/elastiflow/maxmind. A base é a GeoIP Lite, que pode ser copiada da pasta elastiflow/maxmind. Necessário extrair os arquivos. Para mais instruções, verifique o [site do desenvolvedor.](https://docs.elastiflow.com)
 
 ```
 cd docker-netflow-suite/elastiflow/maxmind
@@ -55,6 +55,15 @@ tar xvzf GeoLite2-City* --strip-components 1
 tar xvzf GeoLite2-ASN* --strip-components 1
 rm *.tar.gz
 ```
+
+4. Copiar os arquivos de configuração do elastiflow
+
+```
+cd docker-netflow-suite/elastiflow/settings
+cp * /etc/elastiflow/settings/.
+```
+
+Os arquivos são referentes a configurações dos roteadores que irão enviar os flows. Para mais instruções, verifique o [site do desenvolvedor.](https://docs.elastiflow.com)
 
 4. Aplicar permissão nas pastas dos bancos de dados
 
