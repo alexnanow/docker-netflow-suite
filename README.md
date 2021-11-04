@@ -27,6 +27,7 @@ cd docker-netflow-suite/elastiflow/maxmind
 cp * /etc/elastiflow/maxmind/. && cd /etc/elastiflow/maxmind
 tar xvzf GeoLite2-City* --strip-components 1
 tar xvzf GeoLite2-ASN* --strip-components 1
+rm *.tar.gz
 ```
 
 4. Aplicar permissão nas pastas dos bancos de dados
