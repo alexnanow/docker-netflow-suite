@@ -25,7 +25,8 @@ Obs: Necessário copiar os arquivos das bases de GeoIP da Maxmind dentro da past
 ```
 cd docker-netflow-suite/elastiflow/maxmind
 cp * /etc/elastiflow/maxmind/. && cd /etc/elastiflow/maxmind
-tar xvzf GeoLite2* --strip-components 1
+tar xvzf GeoLite2-City* --strip-components 1
+tar xvzf GeoLite2-ASN* --strip-components 1
 ```
 
 4. Aplicar permissão nas pastas dos bancos de dados
