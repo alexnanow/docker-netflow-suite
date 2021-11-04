@@ -65,14 +65,14 @@ cp * /etc/elastiflow/settings/.
 
 Os arquivos são referentes a configurações dos roteadores que irão enviar os flows. Para mais instruções, verifique o [site do desenvolvedor.](https://docs.elastiflow.com)
 
-4. Aplicar permissão nas pastas dos bancos de dados
+5. Aplicar permissão nas pastas dos bancos de dados
 
 ```
 chown -R 1000:1000 /var/lib/elasticsearch
 chown -R 472:472 /var/lib/grafana 
 ```
 
-5. Entrar e executar o docker-compose para baixar e rodar os containers das aplicações
+6. Entrar e executar o docker-compose para baixar e rodar os containers das aplicações
 
 ```
 cd docker-netflow-suite
