@@ -15,7 +15,7 @@ git clone https://github.com/alexnanow/docker-netflow-suite
 
 ```
 mkdir /var/lib/elasticsearch /var/lib/grafana 
-mkdir -r /etc/elastiflow/settings /etc/elastiflow/maxmind
+mkdir -p /etc/elastiflow/settings /etc/elastiflow/maxmind
 ```
 
 3. Extrair os arquivos de GeoIP
