@@ -33,7 +33,7 @@ docker-compose up -d
 
 Para entrar no grafana:
 
-http://<ipdoservidor>:3000
+http://ipdoservidor:3000
 
 
 Para modificar a community SNMP, basta entrar no arquivo .env e modificar o parâmetro COMMUNITY_SNMP. Importante manter a community entre aspas simples
