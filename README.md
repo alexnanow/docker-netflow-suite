@@ -74,7 +74,14 @@ chown -R 1000:1000 /var/lib/elasticsearch
 chown -R 472:472 /var/lib/grafana 
 ```
 
-6. Entrar e executar o docker-compose para baixar e rodar os containers das aplicações
+6. Aplicar configurações de otimização do sistema operacional (Exigidos pelo Elasticsearch - Necessário reiniciar a máquina)
+
+```
+echo "vm.max_map_count=262144" | sudo tee /etc/sysctl.d/70-elasticsearch.conf > /dev/null
+echo -e "net.core.netdev_max_backlog=4096\nnet.core.rmem_default=262144\nnet.core.rmem_max=67108864\nnet.ipv4.udp_rmem_min=131072\nnet.ipv4.udp_mem=2097152 4194304 8388608" | sudo tee /etc/sysctl.d/60-net.conf > /dev/null
+```
+
+7. Entrar e executar o docker-compose para baixar e rodar os containers das aplicações
 
 ```
 cd /root/docker-netflow-suite
