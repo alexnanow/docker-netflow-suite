@@ -25,11 +25,6 @@ Para instalar a suite:
 
 1. Clonar o repositório via GIT. 
 
-```
-cd /root
-git clone https://github.com/alexnanow/docker-netflow-suite
-```
-
 Por estar em desenvolvimento, necessário baixar a branch develop:
 
 ```
