@@ -78,6 +78,7 @@ echo -e "net.core.netdev_max_backlog=4096\nnet.core.rmem_default=262144\nnet.cor
 
 ```
 cd /root/docker-netflow-suite
+docker-compose build
 docker-compose up -d
 ```
 
