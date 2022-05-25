@@ -1,0 +1,297 @@
+version: "3.8"
+
+networks:
+    elk:
+        driver: bridge
+        
+services:
+    
+    # Elasticsearch
+    elasticsearch:
+        build:
+            context: elasticsearch/
+            args:
+                VERSAO_ELK: $VERSAO_ELK
+        #image: docker.elastic.co/elasticsearch/elasticsearch:7.15.1
+        restart: unless-stopped
+        container_name: elasticsearch01
+        hostname: elasticsearch01
+        ulimits:
+            memlock:
+                soft: -1
+                hard: -1
+            nofile:
+                soft: 131072
+                hard: 131072
+            nproc: 8192
+            fsize: -1
+        networks:
+            - elk
+        ports:
+        # HTTP/REST
+            - "127.0.0.1:9200:9200/tcp"
+        volumes:
+        # mkdir /var/lib/elasticsearch && chown -R 1000:1000 /var/lib/elasticsearch
+            - /var/lib/elasticsearch:/usr/share/elasticsearch/data
+            - /etc/certs:/usr/share/elasticsearch/config/certificates
+        environment:
+            ES_JAVA_OPTS: $ELK_MEMORY
+            cluster.name: elastiflow
+            node.name: elk01
+            bootstrap.memory_lock: 'true'
+            network.bind_host: 0.0.0.0
+            #transport.host: 127.0.0.1
+            #network.publish_host: 192.0.2.11
+            http.port: 9200
+            http.publish_port: 9200
+            discovery.type: 'single-node'
+            indices.query.bool.max_clause_count: 8192
+            search.max_buckets: 250000
+            action.destructive_requires_name: 'true'
+            reindex.remote.whitelist: '*:*'
+
+    # ElastiFlow Unified Flow Collector
+    flowcoll:
+        build:
+            context: elastiflow/
+            args:
+                VERSAO_FLOW: $VERSAO_FLOW
+        #image: elastiflow/flow-collector:5.1.10
+        container_name: flowcoll01
+        hostname: flowcoll01
+        restart: 'unless-stopped'
+        network_mode: host
+        volumes:
+            - /etc/elastiflow:/etc/elastiflow
+        environment:
+          ELK_URL: "127.0.0.1:9200"
+          #EF_FLOW_ACCOUNT_ID: ''
+          #EF_FLOW_LICENSE_KEY: ''
+          #EF_FLOW_LICENSED_CORES:
+
+          #EF_FLOW_LOGGER_LEVEL: 'info'
+          #EF_FLOW_LOGGER_ENCODING: 'json'
+          #EF_FLOW_LOGGER_FILE_LOG_ENABLE: 'false'
+          #EF_FLOW_LOGGER_FILE_LOG_DIR: '/var/log/elastiflow/flowcoll'
+          #EF_FLOW_LOGGER_FILE_LOG_COUNT: 4
+          #EF_FLOW_LOGGER_FILE_LOG_INTERVAL: 'daily'
+          #EF_FLOW_LOGGER_FILE_LOG_SIZE: '100MB'
+
+          EF_FLOW_SERVER_UDP_IP: '0.0.0.0'
+          EF_FLOW_SERVER_UDP_PORT: 9995
+          #EF_FLOW_SERVER_UDP_PACKET_STREAM_MAX_SIZE:
+          #EF_FLOW_SERVER_UDP_READ_BUFFER_MAX_SIZE: 134217728
+
+          #EF_FLOW_DECODER_SETTINGS_PATH: '/etc/elastiflow'
+
+          #EF_FLOW_DECODER_IPFIX_ENABLE: 'true'
+          #EF_FLOW_DECODER_NETFLOW1_ENABLE: 'true'
+          #EF_FLOW_DECODER_NETFLOW5_ENABLE: 'true'
+          #EF_FLOW_DECODER_NETFLOW6_ENABLE: 'true'
+          #EF_FLOW_DECODER_NETFLOW7_ENABLE: 'true'
+          EF_FLOW_DECODER_NETFLOW9_ENABLE: 'true'
+          #EF_FLOW_DECODER_SFLOW5_ENABLE: 'true'
+          #EF_FLOW_DECODER_SFLOW_FLOWS_ENABLE: 'true'
+          #EF_FLOW_DECODER_SFLOW_FLOWS_KEEP_SAMPLES: 'false'
+          #EF_FLOW_DECODER_SFLOW_COUNTERS_ENABLE: 'true'
+
+          #EF_FLOW_DECODER_TRANSLATE_KEEP_IDS: 'default'
+
+          EF_FLOW_DECODER_ENRICH_DNS_ENABLE: 'false'
+          EF_FLOW_DECODER_ENRICH_DNS_NAMESERVER_IP: ''
+          EF_FLOW_DECODER_ENRICH_DNS_NAMESERVER_TIMEOUT: 3000
+          #EF_FLOW_DECODER_ENRICH_DNS_CACHE_SIZE: 8388608
+          #EF_FLOW_DECODER_ENRICH_DNS_RESOLVE_EXPORTER: 'true'
+          #EF_FLOW_DECODER_ENRICH_DNS_RESOLVE_PRIVATE: 'true'
+          #EF_FLOW_DECODER_ENRICH_DNS_RESOLVE_PUBLIC: 'true'
+          #EF_FLOW_DECODER_ENRICH_DNS_USERDEF_ENABLE: 'false'
+          #EF_FLOW_DECODER_ENRICH_DNS_USERDEF_PATH: 'settings/hostnames_user_defined.yml'
+
+          #EF_FLOW_DECODER_ENRICH_NETIF_GET_ATTRS: 'true'
+          #EF_FLOW_DECODER_ENRICH_NETIF_CACHE_SIZE: 262144
+
+          EF_FLOW_DECODER_ENRICH_SNMP_ENABLE: 'true'
+          EF_FLOW_DECODER_ENRICH_SNMP_PORT: 161
+          EF_FLOW_DECODER_ENRICH_SNMP_VERSION: 2
+          EF_FLOW_DECODER_ENRICH_SNMP_COMMUNITY: $COMMUNITY_SNMP
+          #EF_FLOW_DECODER_ENRICH_SNMP_TIMEOUT: 2
+          #EF_FLOW_DECODER_ENRICH_SNMP_RETRIES: 1
+
+          #EF_FLOW_DECODER_ENRICH_APP_CACHE_SIZE: 8388608
+
+          #EF_FLOW_DECODER_ENRICH_APP_USERDEF_ENABLE: 'false'
+          #EF_FLOW_DECODER_ENRICH_APP_USERDEF_PRIVATE: 'true'
+          #EF_FLOW_DECODER_ENRICH_APP_USERDEF_PUBLIC: 'true'
+          #EF_FLOW_DECODER_ENRICH_APP_USERDEF_PATH: 'settings/apps_user_defined.yml'
+
+          #EF_FLOW_DECODER_ENRICH_ASN_PREF: 'lookup'
+
+          #EF_FLOW_DECODER_ENRICH_RISKIQ_ASN_ENABLE: 'false'
+          #EF_FLOW_DECODER_ENRICH_RISKIQ_ASN_ENDPOINT: 'https://api.passivetotal.org/v2/netflow/as/download'
+          #EF_FLOW_DECODER_ENRICH_RISKIQ_ASN_REFRESH_INTERVAL: 1440
+          #EF_FLOW_DECODER_ENRICH_RISKIQ_THREAT_ENABLE: 'false'
+          #EF_FLOW_DECODER_ENRICH_RISKIQ_THREAT_ENDPOINT: 'https://api.passivetotal.org/v2/netflow/blocklist/download'
+          #EF_FLOW_DECODER_ENRICH_RISKIQ_THREAT_REFRESH_INTERVAL: 1440
+          #EF_FLOW_DECODER_ENRICH_RISKIQ_API_USER: ''
+          #EF_FLOW_DECODER_ENRICH_RISKIQ_API_KEY: ''
+          #EF_FLOW_DECODER_ENRICH_RISKIQ_API_TIMEOUT: 30
+
+          EF_FLOW_DECODER_ENRICH_MAXMIND_ASN_ENABLE: 'true'
+          #EF_FLOW_DECODER_ENRICH_MAXMIND_ASN_CACHE_SIZE: 8388608
+          EF_FLOW_DECODER_ENRICH_MAXMIND_ASN_PATH: 'maxmind/GeoLite2-ASN.mmdb'
+
+          EF_FLOW_DECODER_ENRICH_MAXMIND_GEOIP_ENABLE: 'true'
+          #EF_FLOW_DECODER_ENRICH_MAXMIND_GEOIP_CACHE_SIZE: 8388608
+          EF_FLOW_DECODER_ENRICH_MAXMIND_GEOIP_PATH: 'maxmind/GeoLite2-City.mmdb'
+          #EF_FLOW_DECODER_ENRICH_MAXMIND_GEOIP_VALUES: 'city,country,country_code,location,timezone'
+          #EF_FLOW_DECODER_ENRICH_MAXMIND_GEOIP_LANG: 'en'
+
+          #EF_FLOW_DECODER_ENRICH_SAMPLERATE_CACHE_SIZE: 32768
+          EF_FLOW_DECODER_ENRICH_SAMPLERATE_USERDEF_ENABLE: 'true'
+          EF_FLOW_DECODER_ENRICH_SAMPLERATE_USERDEF_PATH: 'settings/sample_rate.yml'
+
+          #EF_FLOW_DECODER_ENRICH_COMMUNITYID_ENABLE: 'true'
+          #EF_FLOW_DECODER_ENRICH_COMMUNITYID_SEED: 0
+          #EF_FLOW_DECODER_ENRICH_CONVERSATIONID_ENABLE: 'true'
+          #EF_FLOW_DECODER_ENRICH_CONVERSATIONID_SEED: 0
+
+          #EF_FLOW_DECODER_ENRICH_JOIN_ASN: 'true'
+          #EF_FLOW_DECODER_ENRICH_JOIN_GEOIP: 'true'
+          #EF_FLOW_DECODER_ENRICH_JOIN_SEC: 'true'
+          #EF_FLOW_DECODER_ENRICH_JOIN_NETATTR: 'true'
+
+          #EF_FLOW_DECODER_DURATION_PRECISION: 'ms'
+          #EF_FLOW_DECODER_TIMESTAMP_PRECISION: 'ms'
+          #EF_FLOW_DECODER_PERCENT_NORM: 100
+          #EF_FLOW_DECODER_ENRICH_EXPAND_CLISRV: 'true'
+          #EF_FLOW_DECODER_ENRICH_KEEP_CPU_TICKS: 'false'
+
+          #EF_FLOW_RECORD_STREAM_MAX_SIZE:
+
+          # stdout
+          #EF_FLOW_OUTPUT_STDOUT_ENABLE: 'false'
+          #EF_FLOW_OUTPUT_STDOUT_FORMAT: 'json_pretty'
+
+          # monitor
+          #EF_FLOW_OUTPUT_MONITOR_ENABLE: 'false'
+          #EF_FLOW_OUTPUT_MONITOR_INTERVAL: 300
+
+          # Elasticsearch
+          EF_FLOW_OUTPUT_ELASTICSEARCH_ENABLE: 'true'
+          EF_FLOW_OUTPUT_ELASTICSEARCH_ECS_ENABLE: 'true'
+          #EF_FLOW_OUTPUT_ELASTICSEARCH_BATCH_DEADLINE: 2000
+          #EF_FLOW_OUTPUT_ELASTICSEARCH_BATCH_MAX_BYTES: 8388608
+          #EF_FLOW_OUTPUT_ELASTICSEARCH_TIMESTAMP_SOURCE: 'end'
+          #EF_FLOW_OUTPUT_ELASTICSEARCH_INDEX_PERIOD: 'daily'
+          #EF_FLOW_OUTPUT_ELASTICSEARCH_INDEX_SUFFIX: ''
+
+          #EF_FLOW_OUTPUT_ELASTICSEARCH_INDEX_TEMPLATE_ENABLE: 'true'
+          #EF_FLOW_OUTPUT_ELASTICSEARCH_INDEX_TEMPLATE_OVERWRITE: 'true'
+          EF_FLOW_OUTPUT_ELASTICSEARCH_INDEX_TEMPLATE_SHARDS: 1
+          EF_FLOW_OUTPUT_ELASTICSEARCH_INDEX_TEMPLATE_REPLICAS: 0
+          #EF_FLOW_OUTPUT_ELASTICSEARCH_INDEX_TEMPLATE_REFRESH_INTERVAL: '10s'
+          #EF_FLOW_OUTPUT_ELASTICSEARCH_INDEX_TEMPLATE_CODEC: 'best_compression'
+          #EF_FLOW_OUTPUT_ELASTICSEARCH_INDEX_TEMPLATE_ILM_LIFECYCLE: ''
+          #EF_FLOW_OUTPUT_ELASTICSEARCH_INDEX_TEMPLATE_ILM_ROLLOVER_ALIAS: ''
+          #EF_FLOW_OUTPUT_ELASTICSEARCH_INDEX_TEMPLATE_ISM_POLICY: ''
+          #EF_FLOW_OUTPUT_ELASTICSEARCH_INDEX_TEMPLATE_PIPELINE_DEFAULT: '_none'
+          #EF_FLOW_OUTPUT_ELASTICSEARCH_INDEX_TEMPLATE_PIPELINE_FINAL: '_none'
+
+          # A comma separated list of Elasticsearch nodes to use. DO NOT include "http://" or "https://"
+          EF_FLOW_OUTPUT_ELASTICSEARCH_ADDRESSES: '127.0.0.1:9200'
+          EF_FLOW_OUTPUT_ELASTICSEARCH_USERNAME: 'elastic'
+          EF_FLOW_OUTPUT_ELASTICSEARCH_PASSWORD: 'changeme'
+          #EF_FLOW_OUTPUT_ELASTICSEARCH_CLOUD_ID: ''
+          #EF_FLOW_OUTPUT_ELASTICSEARCH_API_KEY: ''
+
+          EF_FLOW_OUTPUT_ELASTICSEARCH_TLS_ENABLE: 'false'
+          EF_FLOW_OUTPUT_ELASTICSEARCH_TLS_SKIP_VERIFICATION: 'false'
+          EF_FLOW_OUTPUT_ELASTICSEARCH_TLS_CA_CERT_FILEPATH: ''
+
+          #EF_FLOW_OUTPUT_ELASTICSEARCH_RETRY_ENABLE: 'true'
+          #EF_FLOW_OUTPUT_ELASTICSEARCH_RETRY_ON_TIMEOUT_ENABLE: 'true'
+          #EF_FLOW_OUTPUT_ELASTICSEARCH_MAX_RETRIES: 3
+          #EF_FLOW_OUTPUT_ELASTICSEARCH_RETRY_BACKOFF: 1000
+
+          # Splunk
+          EF_FLOW_OUTPUT_SPLUNK_HEC_ENABLE: 'false'
+          EF_FLOW_OUTPUT_SPLUNK_HEC_HOST: ''
+          #EF_FLOW_OUTPUT_SPLUNK_HEC_PORT: 8088
+          EF_FLOW_OUTPUT_SPLUNK_HEC_TOKEN: ''
+          #EF_FLOW_OUTPUT_SPLUNK_HEC_MAX_BYTES: 8388608
+          #EF_FLOW_OUTPUT_SPLUNK_HEC_BATCH_DEADLINE: 2000
+          #EF_FLOW_OUTPUT_SPLUNK_HEC_TLS_ENABLE: true
+
+          # Logz.io
+          EF_FLOW_OUTPUT_LOGZIO_ENABLE: 'false'
+          #EF_FLOW_OUTPUT_LOGZIO_HOST: 'listener.logz.io'
+          EF_FLOW_OUTPUT_LOGZIO_TOKEN: ''
+          #EF_FLOW_OUTPUT_LOGZIO_TIMESTAMP_SOURCE: 'end'
+          #EF_FLOW_OUTPUT_LOGZIO_BATCH_DEADLINE: 2000
+          #EF_FLOW_OUTPUT_LOGZIO_BATCH_MAX_BYTES: 8388608
+          #EF_FLOW_OUTPUT_LOGZIO_ECS_ENABLE: 'false'
+          #EF_FLOW_OUTPUT_LOGZIO_TIMEOUT: 30000
+          #EF_FLOW_OUTPUT_LOGZIO_TLS_ENABLE: 'false'
+
+          # Kafka
+          EF_FLOW_OUTPUT_KAFKA_ENABLE: 'false'
+          EF_FLOW_OUTPUT_KAFKA_BROKERS: ''
+          #EF_FLOW_OUTPUT_KAFKA_VERSION: '1.0.0'
+          #EF_FLOW_OUTPUT_KAFKA_CLIENT_ID: 'elastiflow-flowcoll'
+          #EF_FLOW_OUTPUT_KAFKA_RACK_ID: ''
+          #EF_FLOW_OUTPUT_KAFKA_TIMEOUT: 30
+
+          EF_FLOW_OUTPUT_KAFKA_SASL_ENABLE: 'false'
+          EF_FLOW_OUTPUT_KAFKA_SASL_USERNAME: ''
+          EF_FLOW_OUTPUT_KAFKA_SASL_PASSWORD: ''
+
+          #EF_FLOW_OUTPUT_KAFKA_TLS_ENABLE: 'false'
+          #EF_FLOW_OUTPUT_KAFKA_TLS_CA_CERT_FILEPATH: ''
+          #EF_FLOW_OUTPUT_KAFKA_TLS_CERT_FILEPATH: ''
+          #EF_FLOW_OUTPUT_KAFKA_TLS_KEY_FILEPATH: ''
+          #EF_FLOW_OUTPUT_KAFKA_TLS_SKIP_VERIFICATION: 'false'
+
+          #EF_FLOW_OUTPUT_KAFKA_PRODUCER_MAX_MESSAGE_BYTES: 1000000
+          #EF_FLOW_OUTPUT_KAFKA_PRODUCER_REQUIRED_ACKS: 1
+          #EF_FLOW_OUTPUT_KAFKA_PRODUCER_TIMEOUT: 10
+          #EF_FLOW_OUTPUT_KAFKA_PRODUCER_COMPRESSION: 0
+          #EF_FLOW_OUTPUT_KAFKA_PRODUCER_COMPRESSION_LEVEL: -1000
+          #EF_FLOW_OUTPUT_KAFKA_PRODUCER_FLUSH_BYTES: 8388608
+          #EF_FLOW_OUTPUT_KAFKA_PRODUCER_FLUSH_MESSAGES: 1024
+          #EF_FLOW_OUTPUT_KAFKA_PRODUCER_FLUSH_FREQUENCY: 500
+          #EF_FLOW_OUTPUT_KAFKA_PRODUCER_FLUSH_MAX_MESSAGES: 0
+          #EF_FLOW_OUTPUT_KAFKA_PRODUCER_RETRY_MAX: 3
+          #EF_FLOW_OUTPUT_KAFKA_PRODUCER_RETRY_BACKOFF: 100
+
+          # RiskIQ
+          EF_FLOW_OUTPUT_RISKIQ_ENABLE: 'false'
+          EF_FLOW_OUTPUT_RISKIQ_HOST: ''
+          EF_FLOW_OUTPUT_RISKIQ_PORT:
+          EF_FLOW_OUTPUT_RISKIQ_CUSTOMER_UUID: ''
+          EF_FLOW_OUTPUT_RISKIQ_CUSTOMER_ENCRYPTION_KEY: ''
+        depends_on:
+            - elasticsearch
+    # Grafana
+    grafana:
+        build:
+            context: grafana/
+            args:
+                VERSAO_GRAFANA: $VERSAO_GRAFANA
+        container_name: grafana01
+        hostname: grafana01
+        volumes:
+            - /var/lib/grafana:/var/lib/grafana
+            #- ./grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards
+            #- ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+        environment:
+            - GF_SECURITY_ADMIN_USER=${ADMIN_USER:-admin}
+            - GF_SECURITY_ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin}
+            - GF_USERS_ALLOW_SIGN_UP=false
+        restart: unless-stopped
+        ports:
+            - "3000:3000"
+        networks:
+            - elk
+        depends_on:
+            - flowcoll
+    
