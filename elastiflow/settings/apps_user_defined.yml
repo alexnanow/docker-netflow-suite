@@ -1,0 +1,5 @@
+# Examples
+'192.0.2.11':
+  5601: 'kibana'
+  9200: 'elasticsearch'
+  9300: 'elasticsearch_transport'
